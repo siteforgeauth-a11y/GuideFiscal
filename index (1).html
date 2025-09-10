@@ -1,0 +1,758 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimisation Fiscale en France 2026 : Guide Complet et Légal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f6f5;
+            color: #333;
+            line-height: 1.7;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #fff;
+            padding: 80px 0;
+            text-align: center;
+            border-bottom: 3px solid #1a252f;
+            position: relative;
+            overflow: hidden;
+        }
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        .header-img {
+            max-height: 250px;
+            object-fit: cover;
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 1px solid #e2e8f0;
+        }
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.2);
+            z-index: 0;
+        }
+        .section {
+            padding: 60px 0;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .card-header {
+            background: #2c3e50;
+            color: #fff;
+            font-weight: 600;
+            border-bottom: 1px solid #1a252f;
+        }
+        .icon {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .warning {
+            background-color: #fff8e1;
+            border: 1px solid #ffe082;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        .table {
+            font-size: 0.95em;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table th, .table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+        }
+        .table thead {
+            background: #2c3e50;
+            color: #fff;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .exemple {
+            background: #e8f0fe;
+            padding: 15px;
+            border-left: 5px solid #2c3e50;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .etapes {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border: 1px solid #e2e8f0;
+        }
+        .navbar {
+            background: #2c3e50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .navbar-brand, .nav-link {
+            color: #fff !important;
+            font-weight: 500;
+        }
+        .nav-link:hover {
+            color: #d1d5db !important;
+        }
+        footer {
+            background: #1a252f;
+            color: #d1d5db;
+            padding: 40px 0;
+            font-size: 0.9em;
+        }
+        h2, h3, h4, h5, h6 {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: #2c3e50;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: #34495e;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-overlay"></div>
+        <div class="container">
+            <div class="header-content">
+                <h1><i class="fas fa-balance-scale icon"></i> Optimisation Fiscale en France 2026</h1>
+                <p>Un guide exhaustif et professionnel pour réduire légalement votre impôt en France, basé sur les réformes fiscales 2026 et le Code Général des Impôts (CGI).</p>
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80" alt="Fiscalité française" class="header-img">
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-home"></i> Accueil</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#salaries">Salariés</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#investisseurs">Investisseurs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#entrepreneurs">Entrepreneurs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#dispositifs">Dispositifs 2026</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#strategies">Stratégies Avancées</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#cas">Cas Pratiques</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Disclaimer -->
+    <div class="container mt-5">
+        <div class="warning">
+            <strong>Avertissement légal :</strong> Ce guide est fourni à titre informatif et éducatif. Il présente des stratégies d'optimisation fiscale conformes aux lois françaises et aux réformes annoncées pour 2026, basées sur le Code Général des Impôts (CGI). Toute mise en œuvre doit être validée par un expert-comptable, un avocat fiscaliste ou un conseiller en gestion de patrimoine. Des modifications législatives peuvent intervenir d'ici fin 2025. L'abus de droit fiscal (art. L64 du Livre des Procédures Fiscales) peut entraîner des sanctions. Agissez dans la légalité et avec transparence.
+        </div>
+    </div>
+
+    <!-- Section Salariés -->
+    <section id="salaries" class="section bg-white">
+        <div class="container">
+            <h2 class="text-center mb-5"><i class="fas fa-briefcase icon"></i> Salariés : Déductions, Frais Professionnels, PER, Avantages Sociaux</h2>
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Environnement professionnel" class="img-fluid">
+            
+            <p>En tant que salarié, l'impôt sur le revenu (IR) est calculé sur vos salaires nets imposables, après déductions et abattements. Pour 2026, le barème de l'IR reste gelé en raison de l'année blanche budgétaire annoncée le 15 juillet 2025 par le gouvernement Bayrou. Ce gel, sans revalorisation face à l'inflation (1,1-1,3% estimée pour 2025), augmente mécaniquement l'impôt pour les salaires en progression, avec un impact moyen de +73 € pour les classes moyennes (OFCE). Cela génère 1,2 milliard € de recettes pour l'État, mais pénalise les salariés indexés sur l'inflation (art. 197 CGI).</p>
+
+            <p>Pour minimiser l'IR, optimisez les déductions. Le quotient familial (1 part célibataire, 2 couple, +0,5/enfant) module l'imposition. Exemple : Célibataire avec 40 000 € net imposable en 2025 : IR brut = (29 315 - 11 498) × 11% + (40 000 - 29 315) × 30% ≈ 5 200 €, avant déductions. Avec optimisations, réduction possible de 20-30%.</p>
+
+            <!-- Barème IR Graphique -->
+            <div class="card">
+                <div class="card-header">Barème de l'Impôt sur le Revenu 2026 (revenus 2025, art. 197 CGI)</div>
+                <div class="card-body">
+                    <canvas id="barChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+            <script>
+                const ctx = document.getElementById('barChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['0% (0-11 497€)', '11% (11 498-29 315€)', '30% (29 316-83 823€)', '41% (83 824-180 294€)', '45% (>180 294€)'],
+                        datasets: [{
+                            label: 'Taux Marginal',
+                            data: [0, 11, 30, 41, 45],
+                            backgroundColor: ['#2c3e50', '#34495e', '#4b5e7a', '#6b7280', '#9ca3af']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { y: { beginAtZero: true, max: 50, title: { display: true, text: 'Taux (%)' } } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            </script>
+
+            <table class="table table-striped mt-4">
+                <thead><tr><th>Tranche de revenu (par part)</th><th>Taux</th><th>Impact du gel</th></tr></thead>
+                <tbody>
+                    <tr><td>Jusqu'à 11 497 €</td><td>0 %</td><td>Seuil non revalorisé, +300k foyers imposables.</td></tr>
+                    <tr><td>11 498 € - 29 315 €</td><td>11 %</td><td>Hausse moyenne 50-100 € pour salaires 25-30k€.</td></tr>
+                    <tr><td>29 316 € - 83 823 €</td><td>30 %</td><td>Hausse 200-500 € pour salaires moyens 40k€.</td></tr>
+                    <tr><td>83 824 € - 180 294 €</td><td>41 %</td><td>Pénalise hauts salaires, +1k€ possible.</td></tr>
+                    <tr><td>>180 294 €</td><td>45 %</td><td>Cumul PS 17,2% alourdit la charge.</td></tr>
+                </tbody>
+            </table>
+
+            <div class="row mt-5">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-tools"></i> Déductions et frais professionnels (art. 83 CGI)</div>
+                        <div class="card-body">
+                            <p>L'abattement forfaitaire de 10% (plafond 14 157 €, min. 504 €, gelé 2026) couvre frais professionnels (transport, repas). Si frais réels supérieurs, optez pour déduction réelle : barème km 2026 (0,553 €/km <5 CV), repas (5,20 €/jour sans cantine), télétravail (2,50 €/jour, max 580 €/an). Pour retraités, réforme 2026 remplace abattement 10% pensions par forfait 2 000 € (art. 158 CGI), augmentant l'impôt de +450 € moyen pour pensions >20k€.</p>
+                            <div class="etapes">
+                                <strong>Étapes pratiques :</strong>
+                                <ol>
+                                    <li>Collectez justificatifs (tickets, km-log).</li>
+                                    <li>Calculez frais réels via simulateur impots.gouv.fr.</li>
+                                    <li>Déclarez case 1AJ (formulaire 2042).</li>
+                                </ol>
+                            </div>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> Salarié, 40k€ revenu, 20 km/jour (200 jours) = 2 212 € (km) + 1 040 € (repas) = 3 252 €. Forfait 10% = 4 000 €. Avec frais réels 5 000 € (km + repas + télétravail), économie : (5 000 - 4 000) × 30% = 300 € IR, compensant partiellement le gel (+~300 €).
+                            </div>
+                            <img src="https://cdn-icons-png.flaticon.com/512/3331/3331882.png" alt="Frais professionnels" class="img-fluid float-end" style="width: 80px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-piggy-bank"></i> Plan d'Épargne Retraite (PER, art. 163 quatervicies CGI)</div>
+                        <div class="card-body">
+                            <p>Le PER permet de déduire les versements du revenu imposable. Plafonds 2026 (PASS gelé 46 368 €) : 10% revenus pros nets 2025, min. 4 637 €, max. 37 094 € (8×PASS). Mutualisation couple possible. Réforme 2026 : abattement pensions supprimé impacte retraités PER (forfait 2 000 €). Sortie en rente : gains partiellement exonérés PS ; capital : IR + PS.</p>
+                            <div class="etapes">
+                                <strong>Étapes pour optimiser :</strong>
+                                <ol>
+                                    <li>Ouvrir PER (ex. Linxea, Amundi).</li>
+                                    <li>Verser avant 31/12/2025 pour déduction 2026.</li>
+                                    <li>Privilégier rente pour exonérations (art. 163 quaterdecies).</li>
+                                </ol>
+                            </div>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> Salarié 50k€ verse 5 000 €. Déduction 5k€ × 30% = 1 500 € économie IR. À retraite, gains 30k€ en rente : exonérés IR, PS 17,2% = 5 160 € vs PFU 9 000 €. Économie nette : 3 840 €.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-users"></i> Avantages sociaux et crédits d'impôt</div>
+                        <div class="card-body">
+                            <p>Tickets restaurant (non imposables, max 13 €/jour gelé), intéressement/participation (exonérés IR si bloqués 5 ans, max 32 994 €). Crédit emploi domicile : 50% dépenses (max 12 000 € + 1 500 €/enfant), rabot 2026 sur "confort" (jardinage, hauts revenus >500k€ RFR). Avance 60% janvier 2026.</p>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> 6k€ services domicile (nounou) = crédit 3 000 €. Tranche 30% : gain net 2 100 € après impôt résiduel.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-hand-holding-usd"></i> Réforme fiscale des pensions 2026</div>
+                        <div class="card-body">
+                            <p>Réforme : abattement 10% pensions remplacé par forfait 2 000 € (art. 158 CGI). Pénalise pensions >20k€ (+10-15% impôt, ~450 € moyen). Contrebalancez via PER ou dons (66-75% réduction).</p>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> Pension 30k€ : abattement 3k€ (10%) = IR ~4k€. Forfait 2k€ : IR ~5,3k€, hausse 1,3k€.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-5">
+                <div class="card-header">Récapitulatif des économies pour un salarié (40k€, tranche 30%)</div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead><tr><th>Stratégie</th><th>Économie estimée</th><th>Conditions / Références</th></tr></thead>
+                        <tbody>
+                            <tr><td>Frais réels vs forfait</td><td>200-500 €</td><td>Justificatifs, art. 83 CGI</td></tr>
+                            <tr><td>Versement PER (5k€)</td><td>1 500 €</td><td>Plafond 37k€, art. 163 quatervicies</td></tr>
+                            <tr><td>Crédit emploi domicile (6k€)</td><td>3 000 €</td><td>Max 12k€, rabot 2026</td></tr>
+                            <tr><td>Intéressement bloqué</td><td>Jusqu'à 5k€</td><td>Blocage 5 ans, max 33k€</td></tr>
+                        </tbody>
+                    </table>
+                    <p>Combinaison : réduction IR jusqu'à 5 000 €, compensant gel barème (+~300 €).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Investisseurs -->
+    <section id="investisseurs" class="section bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5"><i class="fas fa-chart-line icon"></i> Investisseurs : PEA, Assurance-vie, Immobilier, Plus-values</h2>
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Investissement financier" class="img-fluid">
+            
+            <p>Les investisseurs visent à minimiser la fiscalité sur les revenus du capital via le prélèvement forfaitaire unique (PFU, 30% : 12,8% IR + 17,2% PS), stable en 2026. Réformes : proposition suppression plafond PEA (non confirmée, UDR 2025), alignement partiel assurance-vie PFU pour gros contrats (>152k€ succession), fin Pinel 2025, Denormandie prolongé 2027 (art. 199 novovicies CGI).</p>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-seedling"></i> Plan d'Épargne en Actions (PEA, art. 157 CGI)</div>
+                        <div class="card-body">
+                            <p>Pour actions UE/EEE, plafonds : 150k€ (classique), 225k€ (PME). Gains exonérés IR après 5 ans (PS 17,2%). Proposition UDR 2025 : plafond illimité, alignement fiscalité assurance-vie, en attente 2026.</p>
+                            <div class="etapes">
+                                <strong>Étapes :</strong>
+                                <ol>
+                                    <li>Ouvrir PEA (ex. Boursorama, Fortuneo).</li>
+                                    <li>Investir actions/ETF éligibles.</li>
+                                    <li>Retrait >5 ans : exonération IR.</li>
+                                </ol>
+                            </div>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> 50k€ investis, +20k€ gains après 6 ans. Sans PEA : PFU 30% = 6k€. Avec PEA : PS 17,2% = 3 440 €. Économie : 2 560 €.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-shield-alt"></i> Assurance-vie</div>
+                        <div class="card-body">
+                            <p>Versements illimités, abattement 4 600 €/pers. (9 200 € couple) après 8 ans. PS annuels 17,2%. Réforme 2026 : gros contrats (>152k€/bénéf.) taxés 31,25% succession. Exonération 152k€/bénéficiaire si versements <70 ans.</p>
+                            <div class="etapes">
+                                <strong>Étapes :</strong>
+                                <ol>
+                                    <li>Choisir fonds euros/UC (ex. Generali).</li>
+                                    <li>Verser <70 ans pour succession.</li>
+                                    <li>Rachat >8 ans pour abattement.</li>
+                                </ol>
+                            </div>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> 100k€ versés, +30k€ gains après 9 ans. Abattement 4,6k€, taxable 25,4k€ × 7,5% + PS = 4 450 € vs PFU 9k€. Économie : 4 550 €.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-home"></i> Immobilier défiscalisant (Denormandie, art. 199 novovicies CGI)</div>
+                        <div class="card-body">
+                            <p>Prolongé 2027 : réduction IR 12-21% pour achat ancien + travaux (25% coût, max 300k€/an). Zones villes moyennes. LMNP : amortissement, abattement 50% micro-BIC. Réforme 2026 : abattement meublés tourisme 71%→50%.</p>
+                            <div class="etapes">
+                                <strong>Étapes :</strong>
+                                <ol>
+                                    <li>Identifier zone éligible (ANIL).</li>
+                                    <li>Réaliser travaux RGE (énergie).</li>
+                                    <li>Louer 6-12 ans à loyers plafonnés.</li>
+                                </ol>
+                            </div>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> Achat 200k€ + travaux 100k€ = 300k€. Réduction 21% (12 ans) = 63k€ (5 250 €/an). Tranche 30% : gain net 1 575 €/an.
+                            </div>
+                            <img src="https://cdn-icons-png.flaticon.com/512/2933/2933039.png" alt="Immobilier" class="img-fluid float-end" style="width: 80px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-arrow-up"></i> Plus-values (art. 150-0 A/U CGI)</div>
+                        <div class="card-body">
+                            <p>Plus-values mobilières : PFU 30%, report via réinvestissement PER/PEA. Immobilières : 19% + PS, abattements durée détention (6% après 5 ans, exonéré après 22 ans IR).</p>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> Plus-value mobilière 50k€ réinvestie PER : report impôt, économie immédiate 15k€.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-5">
+                <div class="card-header">Comparaison des enveloppes fiscales</div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead><tr><th>Enveloppe</th><th>Plafond</th><th>Exonération gains</th><th>Suivi succession</th><th>Réformes 2026</th></tr></thead>
+                        <tbody>
+                            <tr><td>PEA</td><td>150k€</td><td>>5 ans IR</td><td>Non</td><td>Proposition illimité</td></tr>
+                            <tr><td>Assurance-vie</td><td>Illimité</td><td>>8 ans (abatt. 4,6k€)</td><td>Oui (152k€/bén.)</td><td>Alignement PFU gros contrats</td></tr>
+                            <tr><td>Denormandie</td><td>300k€/an</td><td>Réduction IR 21%</td><td>Non</td><td>Prolongé 2027</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Entrepreneurs -->
+    <section id="entrepreneurs" class="section bg-white">
+        <div class="container">
+            <h2 class="text-center mb-5"><i class="fas fa-user-tie icon"></i> Entrepreneurs : Statut Optimal, Rémunération vs Dividendes, Charges Déductibles</h2>
+            <img src="https://images.unsplash.com/photo-1556754519-0d7f1380f395?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Entrepreneur en réunion" class="img-fluid">
+            
+            <p>Le choix du statut influence charges sociales (45-60%) et IR. Réformes 2026 : facturation électronique obligatoire pour pros (art. 290 CGI), gel IS (15% <42,5k€, 25% au-delà), CVAE supprimée progressivement d'ici 2027. EI pour simplicité, SAS pour flexibilité, SARL pour responsabilité limitée.</p>
+
+            <table class="table table-bordered mt-4">
+                <thead><tr><th>Statut</th><th>Charges sociales</th><th>Fiscalité</th><th>Avantages</th><th>Inconvénients</th></tr></thead>
+                <tbody>
+                    <tr><td>EI</td><td>22-45% BIC</td><td>IR barème</td><td>Simplicité, ACRE 1 an</td><td>Patrimoine perso exposé (sauf EIRL)</td></tr>
+                    <tr><td>SARL</td><td>40-60% rémun.</td><td>IS 15-25%</td><td>Responsabilité limitée</td><td>Gérant majoritaire TNS</td></tr>
+                    <tr><td>SAS</td><td>60% rémun.</td><td>IS + PFU dividendes</td><td>Flexibilité dividendes</td><td>Charges hautes rémun.</td></tr>
+                </tbody>
+            </table>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-balance-scale"></i> Statut optimal</div>
+                        <div class="card-body">
+                            <p>EI pour CA <77k€ (micro abattement 34-71%). SARL : gérant majoritaire TNS (charges 40-45%). SAS : président assimilé salarié, dividendes sans charges. Étapes : 1. Simuler charges via Urssaf.fr. 2. Créer via guichet unique INPI.</p>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> CA 100k€ SAS. Full rémun. : charges 30k€ + IR 10k€ = 40k€. Mix 40k€ rémun. + 60k€ div. : charges 24k€ + IS 9k€ + PFU 15,6k€ = 48,6k€. Économie : ~5k€ vs full rémun.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-coins"></i> Rémunération vs dividendes</div>
+                        <div class="card-body">
+                            <p>SAS : dividendes après IS (15-25%), PFU 30%. SARL gérant majoritaire : charges sur dividendes >10% capital. Mix optimal ~40% rémun./60% div.</p>
+                            <div class="etapes">
+                                <strong>Étapes :</strong>
+                                <ol>
+                                    <li>Fixer rémunération statutaire.</li>
+                                    <li>Distribuer dividendes post-bilan.</li>
+                                    <li>Déclarer via formulaire 2777.</li>
+                                </ol>
+                            </div>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> Bénéfice 80k€ SAS. Mix 40k€ rémun. + 40k€ div. = fiscalité 28k€ vs 40k€ full rémun. Économie 12k€.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header"><i class="fas fa-file-invoice"></i> Charges déductibles (art. 93/39 CGI)</div>
+                <div class="card-body">
+                    <p>Déduisez loyer bureau, véhicule (amortissement), formation. TNS : cotisations Madelin déductibles (max 87 135 € PER 2026). Tenue comptable rigoureuse : formulaire 2035 (EI) ou bilan (SARL/SAS).</p>
+                    <div class="etapes">
+                        <strong>Étapes :</strong>
+                        <ol>
+                            <li>Archiver factures justificatives.</li>
+                            <li>Compta via logiciel agréé (ex. QuickBooks).</li>
+                            <li>Déclarer charges via 2035/bilan.</li>
+                        </ol>
+                    </div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/1111/11110237.png" alt="Calculs comptables" class="img-fluid float-end" style="width: 80px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Dispositifs 2026 -->
+    <section id="dispositifs" class="section bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5"><i class="fas fa-lightbulb icon"></i> Dispositifs Fiscaux 2026 : Crédits, Réductions, Investissements</h2>
+            <img src="https://images.unsplash.com/photo-1459257831348-f0cdd359235f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Dispositifs fiscaux" class="img-fluid">
+            
+            <p>Réformes 2026 : année blanche (gel barèmes), facturation électronique obligatoire pour pros (art. 290 CGI), rabot crédits "confort" (jardinage, hauts revenus). Dons : 75% max 1 000 € (art. 200 CGI). MaPrimeRénov' (ex-CITE) : 30-80% travaux énergie (max 16k€ couple). Garde enfants : 50% max 3 500 €/enfant. Avance crédit 60% janvier 2026.</p>
+
+            <table class="table table-striped mt-4">
+                <thead><tr><th>Dispositif</th><th>Avantage</th><th>Plafond 2026</th><th>Conditions / Réformes</th></tr></thead>
+                <tbody>
+                    <tr><td>Dons caritatifs</td><td>75%</td><td>1 000 €</td><td>Art. 200 CGI, associations aide personnes</td></tr>
+                    <tr><td>Emploi domicile</td><td>50% crédit</td><td>12k€ +1,5k€/enfant</td><td>Rabot 2026 confort, hauts revenus</td></tr>
+                    <tr><td>MaPrimeRénov'</td><td>30-80%</td><td>16k€ couple</td><td>Isolation, DPE obligatoire 2026</td></tr>
+                    <tr><td>Denormandie</td><td>12-21% IR</td><td>300k€/an</td><td>Prolongé 2027, travaux 25%</td></tr>
+                    <tr><td>FCPI/FIP</td><td>25% IR</td><td>24k€ couple</td><td>PME innovation</td></tr>
+                    <tr><td>Girardin</td><td>Réduction IR</td><td>52 941 €</td><td>Outre-mer, art. 199 undecies B</td></tr>
+                </tbody>
+            </table>
+
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-hand-holding-heart"></i> Dons</div>
+                        <div class="card-body">
+                            <p>75% réduction pour œuvres caritatives (max 1k€), 66% autres (max 20% revenu). Exemple : Don 1k€ = 750 € économie.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-solar-panel"></i> MaPrimeRénov'</div>
+                        <div class="card-body">
+                            <p>Crédit 30-80% travaux énergie. Exemple : Isolation 10k€ = 3k€ crédit (max 16k€ couple).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-building"></i> Denormandie</div>
+                        <div class="card-body">
+                            <p>Réduction 12-21% pour rénovation. Exemple : 300k€ = 63k€ sur 12 ans.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Stratégies Avancées -->
+    <section id="strategies" class="section bg-white">
+        <div class="container">
+            <h2 class="text-center mb-5"><i class="fas fa-rocket icon"></i> Stratégies Avancées : Déficit Foncier, IFI, Expatriation</h2>
+            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Stratégies fiscales" class="img-fluid">
+            
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-building"></i> Déficit foncier (art. 156 CGI)</div>
+                        <div class="card-body">
+                            <p>Imputable 40k€/an sur revenu global (réforme bailleur privé 2026). Excédent reportable 10 ans. Amortissement 4-5%/an locatif.</p>
+                            <div class="etapes">
+                                <strong>Étapes :</strong>
+                                <ol>
+                                    <li>Achat locatif ancien.</li>
+                                    <li>Travaux > loyers.</li>
+                                    <li>Déclarer formulaire 2044.</li>
+                                </ol>
+                            </div>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> Travaux 50k€, loyers 10k€ = déficit 40k€. Tranche 41% : économie 16,4k€.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-coins"></i> Impôt sur la Fortune Immobilière (IFI, art. 965 CGI)</div>
+                        <div class="card-body">
+                            <p>Seuil 1,3M€ net taxable. Barème gelé 2026. Réduction dons 75% (max 50k€). SCI endettée ou exonérations (forêts, pro).</p>
+                            <canvas id="ifiChart" width="300" height="150" class="mt-2"></canvas>
+                            <script>
+                                const ctx2 = document.getElementById('ifiChart').getContext('2d');
+                                new Chart(ctx2, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: ['<800k€', '800k-1.3M€', '1.3M-2.57M€', '2.57M-5M€', '5M-10M€', '>10M€'],
+                                        datasets: [{ label: 'Taux IFI', data: [0, 0.5, 0.7, 1, 1.25, 1.5], backgroundColor: '#2c3e50' }]
+                                    },
+                                    options: { responsive: true, scales: { y: { beginAtZero: true, max: 2, title: { display: true, text: 'Taux (%)' } } } }
+                                });
+                            </script>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> Patrimoine 2M€, IFI ~7k€. Don 10k€ = réduction 7,5k€ (IFI 0).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-plane"></i> Expatriation fiscale (art. 4A CGI)</div>
+                        <div class="card-body">
+                            <p>Non-résident : IR/IFI sur revenus/biens FR. Conventions fiscales (ex. Portugal NHR 0% capitaux 10 ans). Exit tax >1M€ actions (report 2-5 ans).</p>
+                            <div class="etapes">
+                                <strong>Étapes :</strong>
+                                <ol>
+                                    <li>Résidence >183j hors France.</li>
+                                    <li>Choisir pays (Suisse, Portugal).</li>
+                                    <li>Déclarer sortie (formulaire 2074).</li>
+                                </ol>
+                            </div>
+                            <div class="exemple">
+                                <strong>Exemple :</strong> Capitaux 200k€. France : PFU 60k€. Portugal : 0€. Économie 60k€ (exit tax ~45k€ si applicable).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Cas Pratiques -->
+    <section id="cas" class="section bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5"><i class="fas fa-calculator icon"></i> 10 Cas Pratiques Chiffrés avec Calculs d'Économies</h2>
+            <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Calculs fiscaux" class="img-fluid">
+            
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">1. Salarié : Optimisation frais professionnels</div>
+                        <div class="card-body">
+                            <p>Revenu 45k€. Frais réels 6k€ vs forfait 4,5k€. Économie : (6k - 4,5k) × 30% = 450 € (art. 83 CGI).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">2. Salarié : Versement PER</div>
+                        <div class="card-body">
+                            <p>Revenu 60k€, versement 6k€. Déduction 6k€ × 41% = 2 460 € (plafond 37k€, art. 163 quatervicies).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">3. Investisseur : PEA</div>
+                        <div class="card-body">
+                            <p>100k€ investis, +40k€ gains. Exonéré IR après 5 ans : économie 12k€ vs PFU (art. 157).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">4. Investisseur : Assurance-vie</div>
+                        <div class="card-body">
+                            <p>150k€ +50k€ gains. Abattement 4,6k€ : impôt 7,9k€ vs 15k€ PFU. Économie 7,1k€.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">5. Investisseur : Denormandie</div>
+                        <div class="card-body">
+                            <p>250k€ investissement, réduction 52,5k€/12 ans = 4,375k€/an × 30% = 1,3k€ net/an (art. 199 novovicies).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">6. Entrepreneur : SAS dividendes</div>
+                        <div class="card-body">
+                            <p>Bénéfice 80k€. Mix 40k€ rémun. + 40k€ div. : économie 12k€ vs full rémun.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">7. Déficit foncier</div>
+                        <div class="card-body">
+                            <p>Travaux 60k€, loyers 15k€ = déficit 45k€. Imputation 40k€ × 41% = 16,4k€ (art. 156).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">8. Crédit dons</div>
+                        <div class="card-body">
+                            <p>Don 1k€ caritatif = réduction 750 € (art. 200 CGI).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">9. IFI : Réduction dons</div>
+                        <div class="card-body">
+                            <p>Patrimoine 2M€, IFI 7k€. Don 10k€ = réduction 7,5k€ (IFI 0, art. 978).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">10. Expatriation fiscale</div>
+                        <div class="card-body">
+                            <p>Capitaux 200k€. France : PFU 60k€. Portugal : 0€. Économie 60k€ (exit tax hors, art. 167 bis).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p>&copy; 2025 Optimisation Fiscale France. Basé sur le Code Général des Impôts et réformes 2026 (PLF 2026, impots.gouv.fr, OFCE). Consultez un professionnel pour des conseils personnalisés.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
