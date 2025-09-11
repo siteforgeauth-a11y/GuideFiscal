@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -56,7 +17,7 @@
         .header {
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: #fff;
-            padding: 80px 0;
+            padding: 100px 0;
             text-align: center;
             border-bottom: 3px solid #1a252f;
             position: relative;
@@ -69,24 +30,31 @@
             z-index: 1;
         }
         .header h1 {
-            font-size: 3rem;
+            font-size: 3.2rem;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
         }
         .header p {
             font-size: 1.2rem;
             font-weight: 400;
-            max-width: 700px;
-            margin: 0 auto;
+            max-width: 750px;
+            margin: 0 auto 20px;
             opacity: 0.9;
         }
+        .header-subtext {
+            font-size: 1rem;
+            font-style: italic;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.85;
+        }
         .header-img {
-            max-height: 250px;
+            max-height: 300px;
             object-fit: cover;
             width: 100%;
             border-radius: 10px;
-            margin-top: 25px;
+            margin-top: 30px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             border: 1px solid #e2e8f0;
         }
@@ -202,6 +170,7 @@
             <div class="header-content">
                 <h1><i class="fas fa-balance-scale icon"></i> Optimisation Fiscale en France 2026</h1>
                 <p>Un guide exhaustif et professionnel pour réduire légalement votre impôt en France, basé sur les réformes fiscales 2026 et le Code Général des Impôts (CGI).</p>
+                <p class="header-subtext">Découvrez des stratégies adaptées aux salariés, investisseurs et entrepreneurs pour maximiser vos économies d'impôt tout en respectant la législation. Que vous cherchiez à optimiser vos frais professionnels, investir dans l'immobilier ou structurer votre entreprise, ce guide vous accompagne avec des conseils pratiques et des exemples chiffrés.</p>
                 <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80" alt="Fiscalité française" class="header-img">
             </div>
         </div>
